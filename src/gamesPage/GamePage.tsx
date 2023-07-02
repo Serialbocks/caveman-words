@@ -5,6 +5,9 @@ import { Game } from './Game';
 
 class GamesPage extends React.Component
 {
+  public GamesPage() {
+  }
+
   readonly state: any = {
     count: 0
   };
@@ -12,7 +15,7 @@ class GamesPage extends React.Component
   GameList({ games }: any) {
     const gameListItems = games.map((game: Game) => (
       <li key={game.id}>{game.name} {game.playerCount}/{game.capacity}</li>
-    ));
+    ), this);
     return <ul>{gameListItems}</ul>;
   }
 
@@ -20,13 +23,10 @@ class GamesPage extends React.Component
     return (
       <>
         <h1>Games</h1>
-        <pre>{JSON.stringify(MOCK_GAMES, null, ' ')}</pre>
         <this.GameList games={MOCK_GAMES} />
 
         <h2>Counter state: {this.state.count}</h2>
-        <span id="inc-count" 
-          title="Increment Count"
-          onClick={() => this.incrementCounter()}>Click to increment</span>
+        <button onClick={() => this.incrementCounter()}>Increment</button>
       </>
     );
   }
@@ -36,16 +36,5 @@ class GamesPage extends React.Component
     this.setState(this.state);
   }
 }
-
-
-/*
-class Greeter extends React.Component<{ name?: string }> {
-  render() {
-    return <h1>Hello {this.props.name}</h1>;
-  }
-}
-
-createRoot(document.getElementById('root')!).render(<Greeter name="John" />);
-*/
 
 export default GamesPage;
