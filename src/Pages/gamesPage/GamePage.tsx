@@ -14,7 +14,6 @@ const characterConfig: Config = {
       style: 'capital'
     };
 
-
 class GamesPage extends React.Component<{navigate: any}>
 {
   constructor(props: any) {
@@ -31,7 +30,6 @@ class GamesPage extends React.Component<{navigate: any}>
     var currentName = localStorage.getItem("playerName");
     if(!currentName) {
       currentName = uniqueNamesGenerator(characterConfig);
-      localStorage.setItem("playerName", currentName);
     }
 
     return currentName;

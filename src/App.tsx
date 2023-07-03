@@ -1,9 +1,9 @@
 import logo from './logo.svg';
 import './App.css';
-import GamesPage from './gamesPage/GamePage';
+import GamesPage from './Pages/gamesPage/GamePage';
 import React from "react";
 import { BrowserRouter as Router, Route, Link, createBrowserRouter, RouterProvider } from "react-router-dom";
-import CreateGamePage from './createGamePage/CreateGamePage';
+import CreateGamePage from './Pages/createGamePage/CreateGamePage';
 
 const router = createBrowserRouter([
   {
