@@ -2,8 +2,10 @@ import React from 'react';
 import {MOCK_GAMES} from './MockGames';
 import { Game } from './Game';
 import "./game.css";
+import { useNavigate } from "react-router-dom";
 
 import { uniqueNamesGenerator, adjectives, animals, Config } from 'unique-names-generator';
+import { withRouter } from '../WithRouter';
 
 const characterConfig: Config = {
     dictionaries: [adjectives, adjectives, animals],
@@ -12,13 +14,17 @@ const characterConfig: Config = {
       style: 'capital'
     };
 
-class GamesPage extends React.Component
+
+class GamesPage extends React.Component<{navigate: any}>
 {
-  public GamesPage() {
+  constructor(props: any) {
+    super(props);
+    this.createGame=this.createGame.bind(this);
   }
 
   readonly state: any = {
-    playerName: this.getPlayerName()
+    playerName: this.getPlayerName(),
+    error: ''
   };
 
   getPlayerName() {
@@ -52,6 +58,15 @@ class GamesPage extends React.Component
     return gameListItems;
   }
 
+  createGame() {
+    if(!this.state.playerName) {
+      this.setState({error: "Please enter a Player Name."});
+      return;
+    }
+
+    this.props.navigate("/create");
+  }
+
   render() {
     return (
       <>
@@ -66,8 +81,12 @@ class GamesPage extends React.Component
 
         <h1>Games</h1>
         <this.GameList games={MOCK_GAMES} />
+
+        <div className="row">
+                <div className="error col-sm-12">{this.state.error}</div>
+            </div>
         <div className="flex-container">
-          <a href={`/create`}><button className="primary" style={{width: "183px"}}>Create Game</button></a>
+          <button className="primary" style={{width: "183px"}} onClick={this.createGame}>Create Game</button>
         </div>
       </>
     );
@@ -75,4 +94,4 @@ class GamesPage extends React.Component
 
 }
 
-export default GamesPage;
+export default withRouter(GamesPage);
