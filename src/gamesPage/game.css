@@ -7,3 +7,12 @@
     margin-top: 5px;
     margin-bottom: 0px;
 }
+
+.col-sm-4 {
+    display: flex;
+    align-items: center;
+}
+
+input {
+    width: 100%;
+}
