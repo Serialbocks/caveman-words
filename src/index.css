@@ -14,3 +14,10 @@
     align-items: center;
     flex-direction: column;
 }
+
+.center-container {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
