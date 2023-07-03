@@ -8,9 +8,7 @@ class GamesPage extends React.Component
   public GamesPage() {
   }
 
-  readonly state: any = {
-    count: 0
-  };
+  readonly state: any = {};
 
   GameList({ games }: any) {
     const gameListItems = games.map((game: Game) => (
@@ -36,18 +34,10 @@ class GamesPage extends React.Component
         <div className="flex-container">
           <a href={`/create`}><button style={{width: "183px"}}>Create Game</button></a>
         </div>
-
-
-        <h2>Counter state: {this.state.count}</h2>
-        <button onClick={() => this.incrementCounter()}>Increment</button>
       </>
     );
   }
 
-  incrementCounter() {
-    this.state.count++;
-    this.setState(this.state);
-  }
 }
 
 export default GamesPage;
