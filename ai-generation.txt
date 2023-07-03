@@ -1,0 +1,144 @@
+Generate 100 pairs of words or phrases where the first word or phrase is a substring of the second. Ignore meaning and focus on substring. For example, "mate,checkmate" or "brick,yellow brick road". Use CSV format.
+
+word1,word2
+bird,lard
+bass,pillow bass
+bee,honey bee
+belly,apple belly
+bell,school bell
+berry,raspberry
+boat,oar boat
+book,story book
+box,shoe box
+bud,buddy
+bug,a bug's life
+button,button up
+cake,icing on the cake
+candle,candlestick
+carrot,rabbit hole
+cat,kitten
+chair,recliner chair
+cheese,pepper jack cheese
+cherry,cherry pie
+chicken,fried chicken
+clock,grandfather clock
+coffee,espresso coffee
+cookie,chocolate chip cookie
+cow,dairy cow
+crayon,art supply crayon
+diamond,diamond ring
+dog,puppy
+door,screen door
+earth,planet earth
+elephant,big elephant
+email,electronic mail
+envelope,return address envelope
+finger,pointing finger
+flower,rose flower
+friend,good friend
+glove,work glove
+gnome,lawn gnome
+hammer,clawhammer
+hat,baseball cap
+heart,red heart shape
+house,white house
+ice cream,banana split ice cream
+insect,cockroach insect
+iris,human iris
+jacket,rain jacket
+jelly bean,Jelly Belly jelly bean
+kangaroo,red kangaroo
+keyboard,computer keyboard
+kiwi,kiwi fruit
+lemon,Lemonhead lemon
+letter,business letter
+lipstick,Chanel lipstick
+lock,bike lock
+lollipop,double lollipop
+mango,Mexican mango
+mask,scuba diving mask
+meal,breakfast meal
+moon,man in the moon
+mountain,Mount Everest
+mouse,computer mouse
+music,classical music
+name,first name
+nut,pecan nut
+octagon,stop sign octagon
+ogre,giant ogre
+oxygen,Oxygen gas
+pancake,blueberry pancake
+parachute,silk parachute
+pencil,writing pencil
+phone,smartphone
+pi,mathematical constant pi
+pineapple,Pineapple juice
+plane,jet plane
+plum,prune plum
+pocket,front pocket
+polish,nail polish remover
+potato,Idaho potato
+present,Christmas present
+purple,grape purple
+quarter,American quarter
+question,questions marks
+rat,lab rat
+rectangle,TV screen rectangle
+reflection,mirror reflection
+relaxation,deep relaxation
+ring,wedding ring
+river,Nile River
+roadrunner,New Mexico roadrunner
+root,radial root
+roses,red roses
+ruler,yard ruler
+salad,Caesar salad
+sandal,flip flop sandal
+scarab,Scarab beetle
+scratch,itchy scratch
+seagull,seagulls
+shadow,sun shadow
+sheep,Sheep dog
+shoe,athletic shoe
+ship,Titanic ship
+shirt,dress shirt
+shrimp,grilled shrimp
+siesta,afternoon siesta
+skyscraper,Empire State Building skyscraper
+sleep,sound sleep
+snack,healthy snack
+sock,crew sock
+song,pop song
+space,outer space
+squid,giant squid
+star,shooting star
+state,50 US states
+steak,t-bone steak
+step,high step
+stooge,Three Stooges
+striped,zebra stripes
+string,guitar string
+study,bedroom study
+suitcase,hardshell suitcase
+swan,mating swans
+table,outdoor table
+taxi,Yellow Cab taxi
+television,flat screen television
+test,medical test
+theater,movie theater
+therapy,physical therapy
+tiger,Bengal tiger
+toast,toasted bread
+tomato,cherry tomato
+tree,oak tree
+truck,pickup truck
+tulip,Dutch tulip
+umbrella,collapsible umbrella
+vacation,beach vacation
+valentine,Valentine's Day valentine
+violin,violin family instrument
+voice,singing voice
+volleyball,beach volleyball
+wall,White House wall
+water,drinking water
+wave,surf wave
