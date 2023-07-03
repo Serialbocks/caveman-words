@@ -1,0 +1,9 @@
+.card {
+    cursor: pointer;
+    user-select: none;
+}
+
+.card h2 {
+    margin-top: 5px;
+    margin-bottom: 0px;
+}

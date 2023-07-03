@@ -1,7 +1,7 @@
 import React from 'react';
 import {MOCK_GAMES} from './MockGames';
-import { createRoot } from 'react-dom/client';
 import { Game } from './Game';
+import "./game.css";
 
 class GamesPage extends React.Component
 {
@@ -14,9 +14,18 @@ class GamesPage extends React.Component
 
   GameList({ games }: any) {
     const gameListItems = games.map((game: Game) => (
-      <li key={game.id}>{game.name} {game.playerCount}/{game.capacity}</li>
+      <>
+        <div className="row">
+          <div className="col-sm-12">
+            <div className = "card fluid">
+              <h2 className="doc">{game.name}</h2>
+              <p className="doc">Players: {game.playerCount}/{game.capacity}</p>
+            </div>
+          </div>
+        </div>
+      </>
     ), this);
-    return <ul>{gameListItems}</ul>;
+    return gameListItems;
   }
 
   render() {
@@ -24,6 +33,10 @@ class GamesPage extends React.Component
       <>
         <h1>Games</h1>
         <this.GameList games={MOCK_GAMES} />
+        <div className="flex-container">
+          <a href={`/create`}><button style={{width: "183px"}}>Create Game</button></a>
+        </div>
+
 
         <h2>Counter state: {this.state.count}</h2>
         <button onClick={() => this.incrementCounter()}>Increment</button>
