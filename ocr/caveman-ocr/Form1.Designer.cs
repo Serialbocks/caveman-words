@@ -33,7 +33,8 @@ namespace caveman_ocr
             this.uxFilename = new System.Windows.Forms.TextBox();
             this.uxFilenameLabel = new System.Windows.Forms.Label();
             this.uxBrowse = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.uxLog = new System.Windows.Forms.TextBox();
+            this.uxSaveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.SuspendLayout();
             // 
             // uxCapture
@@ -41,20 +42,23 @@ namespace caveman_ocr
             this.uxCapture.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.uxCapture.Enabled = false;
-            this.uxCapture.Location = new System.Drawing.Point(12, 153);
+            this.uxCapture.Location = new System.Drawing.Point(12, 261);
             this.uxCapture.Name = "uxCapture";
-            this.uxCapture.Size = new System.Drawing.Size(281, 56);
+            this.uxCapture.Size = new System.Drawing.Size(499, 56);
             this.uxCapture.TabIndex = 0;
             this.uxCapture.Text = "Capture";
             this.uxCapture.UseVisualStyleBackColor = true;
+            this.uxCapture.Click += new System.EventHandler(this.uxCapture_Click);
             // 
             // uxFilename
             // 
             this.uxFilename.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.uxFilename.BackColor = System.Drawing.SystemColors.Window;
             this.uxFilename.Location = new System.Drawing.Point(90, 33);
             this.uxFilename.Name = "uxFilename";
-            this.uxFilename.Size = new System.Drawing.Size(122, 23);
+            this.uxFilename.ReadOnly = true;
+            this.uxFilename.Size = new System.Drawing.Size(340, 23);
             this.uxFilename.TabIndex = 1;
             this.uxFilename.TabStop = false;
             // 
@@ -70,33 +74,39 @@ namespace caveman_ocr
             // uxBrowse
             // 
             this.uxBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.uxBrowse.Location = new System.Drawing.Point(218, 32);
+            this.uxBrowse.Location = new System.Drawing.Point(436, 32);
             this.uxBrowse.Name = "uxBrowse";
             this.uxBrowse.Size = new System.Drawing.Size(75, 23);
             this.uxBrowse.TabIndex = 3;
             this.uxBrowse.Text = "Browse";
             this.uxBrowse.UseVisualStyleBackColor = true;
+            this.uxBrowse.Click += new System.EventHandler(this.uxBrowse_Click);
             // 
-            // textBox1
+            // uxLog
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.uxLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(12, 61);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox1.Size = new System.Drawing.Size(281, 81);
-            this.textBox1.TabIndex = 4;
-            this.textBox1.TabStop = false;
+            this.uxLog.BackColor = System.Drawing.SystemColors.Window;
+            this.uxLog.Location = new System.Drawing.Point(12, 61);
+            this.uxLog.Multiline = true;
+            this.uxLog.Name = "uxLog";
+            this.uxLog.ReadOnly = true;
+            this.uxLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.uxLog.Size = new System.Drawing.Size(499, 189);
+            this.uxLog.TabIndex = 4;
+            this.uxLog.TabStop = false;
+            // 
+            // uxSaveFileDialog
+            // 
+            this.uxSaveFileDialog.Filter = "CSV Files (*.csv)|*.csv";
             // 
             // uxMainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(305, 221);
-            this.Controls.Add(this.textBox1);
+            this.ClientSize = new System.Drawing.Size(523, 329);
+            this.Controls.Add(this.uxLog);
             this.Controls.Add(this.uxBrowse);
             this.Controls.Add(this.uxFilenameLabel);
             this.Controls.Add(this.uxFilename);
@@ -115,7 +125,8 @@ namespace caveman_ocr
         private System.Windows.Forms.TextBox uxFilename;
         private System.Windows.Forms.Label uxFilenameLabel;
         private System.Windows.Forms.Button uxBrowse;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox uxLog;
+        private System.Windows.Forms.SaveFileDialog uxSaveFileDialog;
     }
 }
 
