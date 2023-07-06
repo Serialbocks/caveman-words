@@ -1,5 +1,6 @@
 const card = () => {
     return {
+        index: -1,
         word1: '',
         word2: '',
         set: '',

@@ -132,14 +132,14 @@ class CreateGamePage extends React.Component
                 </div>
             </div>
 
-            <div className="row">
+            {/*<div className="row">
                 <div className="col-sm-6 align-center">
                     <label htmlFor="useAIGeneratedWords">A.I. Cards</label>
                 </div>
                 <div className="col-sm-6">
                     <input checked={this.state.useAIGeneratedWords} type="checkbox" id="useAIGeneratedWords" onChange={(e)=>{this.setState({useAIGeneratedWords: !this.state.useAIGeneratedWords})}} />
                 </div>
-            </div>
+            </div>*/}
 
             <div className="row">
                 <div className="error col-sm-12">{this.state.error}</div>

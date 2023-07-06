@@ -28,6 +28,7 @@ async function seedCards() {
         .on('error', error => log(error))
         .on('data', row => {
             var newCard = card();
+            newCard.index = baseGame.cards.length;
             newCard.word1 = row[0];
             newCard.word2 = row[1];
             newCard.set = baseGame.name;
@@ -46,6 +47,7 @@ async function seedCards() {
             .on('error', error => log(error))
             .on('data', row => {
                 var newCard = card();
+                newCard.index = expansion.cards.length;
                 newCard.word1 = row[0];
                 newCard.word2 = row[1];
                 newCard.set = expansion.name;
@@ -64,6 +66,7 @@ async function seedCards() {
                 .on('error', error => log(error))
                 .on('data', row => {
                     var newCard = card();
+                    newCard.index = nsfw.cards.length;
                     newCard.word1 = row[0];
                     newCard.word2 = row[1];
                     newCard.set = nsfw.name;
@@ -74,10 +77,7 @@ async function seedCards() {
                     cardSets.insertOne(nsfw);
                     log(`nsfw saved to DB`);
                 });
-    
 }
-
-seedCards();
 
 module.exports = {
     connect: connect,
