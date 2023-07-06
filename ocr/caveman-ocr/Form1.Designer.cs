@@ -35,6 +35,7 @@ namespace caveman_ocr
             this.uxBrowse = new System.Windows.Forms.Button();
             this.uxLog = new System.Windows.Forms.TextBox();
             this.uxSaveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.uxRetry = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // uxCapture
@@ -42,7 +43,7 @@ namespace caveman_ocr
             this.uxCapture.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.uxCapture.Enabled = false;
-            this.uxCapture.Location = new System.Drawing.Point(12, 261);
+            this.uxCapture.Location = new System.Drawing.Point(12, 297);
             this.uxCapture.Name = "uxCapture";
             this.uxCapture.Size = new System.Drawing.Size(499, 56);
             this.uxCapture.TabIndex = 0;
@@ -93,7 +94,7 @@ namespace caveman_ocr
             this.uxLog.Name = "uxLog";
             this.uxLog.ReadOnly = true;
             this.uxLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.uxLog.Size = new System.Drawing.Size(499, 189);
+            this.uxLog.Size = new System.Drawing.Size(499, 178);
             this.uxLog.TabIndex = 4;
             this.uxLog.TabStop = false;
             // 
@@ -101,11 +102,22 @@ namespace caveman_ocr
             // 
             this.uxSaveFileDialog.Filter = "CSV Files (*.csv)|*.csv";
             // 
+            // uxRetry
+            // 
+            this.uxRetry.Location = new System.Drawing.Point(166, 245);
+            this.uxRetry.Name = "uxRetry";
+            this.uxRetry.Size = new System.Drawing.Size(192, 46);
+            this.uxRetry.TabIndex = 5;
+            this.uxRetry.Text = "Retry";
+            this.uxRetry.UseVisualStyleBackColor = true;
+            this.uxRetry.Click += new System.EventHandler(this.uxRetry_Click);
+            // 
             // uxMainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(523, 329);
+            this.ClientSize = new System.Drawing.Size(523, 365);
+            this.Controls.Add(this.uxRetry);
             this.Controls.Add(this.uxLog);
             this.Controls.Add(this.uxBrowse);
             this.Controls.Add(this.uxFilenameLabel);
@@ -127,6 +139,7 @@ namespace caveman_ocr
         private System.Windows.Forms.Button uxBrowse;
         private System.Windows.Forms.TextBox uxLog;
         private System.Windows.Forms.SaveFileDialog uxSaveFileDialog;
+        private System.Windows.Forms.Button uxRetry;
     }
 }
 

@@ -17,6 +17,7 @@ namespace caveman_ocr
         public delegate void PrintInfoDelegate(string text);
         public delegate void NotifyCompleteDelegate(string info);
         private OCR _ocr;
+        private string _buffer = "";
 
         public uxMainWindow()
         {
@@ -51,6 +52,14 @@ namespace caveman_ocr
             {
                 uxCapture.Enabled = true;
             }
+            if(!string.IsNullOrEmpty(_buffer))
+            {
+                using (var w = File.AppendText(uxFilename.Text))
+                {
+                    w.WriteLine(_buffer);
+                }
+            }
+            _buffer = info;
             LogText(info);
         }
 
@@ -87,6 +96,12 @@ namespace caveman_ocr
             screenshot.Bitmap.Save(filename, ImageFormat.Jpeg);
 
             _ocr.Process(filename);
+        }
+
+        private void uxRetry_Click(object sender, EventArgs e)
+        {
+            _buffer = "";
+            uxCapture_Click(sender, e);
         }
     }
 }
