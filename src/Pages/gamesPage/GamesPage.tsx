@@ -2,8 +2,6 @@ import React from 'react';
 import {MOCK_GAMES} from './MockGames';
 import { Game } from './Game';
 import "./game.css";
-import { useNavigate } from "react-router-dom";
-
 import { uniqueNamesGenerator, adjectives, animals, Config } from 'unique-names-generator';
 import { withRouter } from '../WithRouter';
 
