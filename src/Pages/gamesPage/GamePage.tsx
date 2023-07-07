@@ -19,6 +19,7 @@ class GamesPage extends React.Component<{navigate: any}>
   constructor(props: any) {
     super(props);
     this.createGame=this.createGame.bind(this);
+    this.GameList=this.GameList.bind(this);
   }
 
   readonly state: any = {
@@ -40,12 +41,16 @@ class GamesPage extends React.Component<{navigate: any}>
     this.setState({playerName: name});
   }
 
+  joinGame(game: Game) {
+    this.props.navigate("/game");
+  }
+
   GameList({ games }: any) {
     const gameListItems = games.map((game: Game) => (
       <>
         <div className="row">
           <div className="col-sm-12">
-            <div className = "card fluid">
+            <div className="card fluid" onClick={() => this.joinGame(game)}>
               <h2 className="doc">{game.name}</h2>
               <p className="doc">Players: {game.playerCount}/{game.capacity}</p>
             </div>

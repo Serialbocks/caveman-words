@@ -1,9 +1,8 @@
-import logo from './logo.svg';
 import './App.css';
 import GamesPage from './Pages/gamesPage/GamePage';
-import React from "react";
 import { BrowserRouter as Router, Route, Link, createBrowserRouter, RouterProvider } from "react-router-dom";
 import CreateGamePage from './Pages/createGamePage/CreateGamePage';
+import GamePage from './Pages/gamePage/GamePage';
 
 const router = createBrowserRouter([
   {
@@ -13,6 +12,10 @@ const router = createBrowserRouter([
   {
     path: "/create",
     element: <CreateGamePage />
+  },
+  {
+    path: "/game",
+    element: <GamePage />
   }
 ]);
 
