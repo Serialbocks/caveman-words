@@ -15,7 +15,7 @@ function initialize(server) {
     });
 
     io.on('connection', (socket) => {
-        console.log(socket.handshake.address);
+        log(`Client connected with IP: ${socket.handshake.address}`);
     });
 
     io.on('get-games', (socket) => {
