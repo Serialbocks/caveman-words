@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './create-game-page.css';
 import { uniqueNamesGenerator, adjectives, animals, Config } from 'unique-names-generator';
 import { withRouter } from '../WithRouter';
+import { socket } from '../../socket';
 
 const characterConfig: Config = {
     dictionaries: [adjectives, adjectives, animals],
@@ -18,7 +19,7 @@ class CreateGamePage extends React.Component<{navigate: any}>
   
     readonly state: any = {
         name: uniqueNamesGenerator(characterConfig),
-        maxPlayers: '16',
+        capacity: '16',
         password: '',
         turnTime: '90',
         useBaseGame: true,
@@ -28,13 +29,21 @@ class CreateGamePage extends React.Component<{navigate: any}>
         error: ''
     };
 
+    componentDidMount() {
+        socket.on('game-created', this.onGameCreated);
+    }
+
+    componentWillUnmount() {
+        socket.off('game-created', this.onGameCreated);
+    }
+
     createGame() {
         if(!this.state.name) {
             this.setState({error: "Name is required."});
             return;
         }
 
-        if(!this.state.maxPlayers) {
+        if(!this.state.capacity) {
             this.setState({error: "Max players is required."});
             return;
         }
@@ -63,11 +72,15 @@ class CreateGamePage extends React.Component<{navigate: any}>
 
         this.setState({error: ''});
         
-        console.log(this.state);
+        socket.emit('create-game', this.state);
     }
 
     back() {
         this.props.navigate('/');
+    }
+
+    public onGameCreated(game: any) {
+        console.log(game);
     }
 
     render() {
@@ -86,10 +99,10 @@ class CreateGamePage extends React.Component<{navigate: any}>
 
             <div className="row">
                 <div className="col-sm-6 align-center">
-                    <label htmlFor="maxPlayers">Max Players</label>
+                    <label htmlFor="capacity">Max Players</label>
                 </div>
                 <div className="col-sm-6">
-                    <input value={this.state.maxPlayers} type="number" step="1" min="2" max="32" id="maxPlayers" onChange={(e)=>{this.setState({maxPlayers: e.target.value})}} />
+                    <input value={this.state.capacity} type="number" step="1" min="2" max="32" id="capacity" onChange={(e)=>{this.setState({capacity: e.target.value})}} />
                 </div>
             </div>
 
@@ -161,7 +174,7 @@ class CreateGamePage extends React.Component<{navigate: any}>
             </div>
           </>
         );
-      }
+    }
 }
 
 export default withRouter(CreateGamePage);

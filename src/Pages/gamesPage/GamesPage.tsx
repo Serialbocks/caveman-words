@@ -19,9 +19,7 @@ class GamesPage extends React.Component<{navigate: any, games: any}>
     super(props);
     this.createGame=this.createGame.bind(this);
     this.GameList=this.GameList.bind(this);
-    socket.timeout(5000).emit('get-games', null, () => {
-      console.log(this.props.games);
-    });
+    socket.timeout(5000).emit('get-games');
   }
 
   readonly state: any = {
@@ -39,11 +37,14 @@ class GamesPage extends React.Component<{navigate: any, games: any}>
       currentName = uniqueNamesGenerator(characterConfig);
     }
 
+    this.setPlayerName(currentName);
+
     return currentName;
   }
 
   setPlayerName(name: string) {
     localStorage.setItem("playerName", name);
+    socket.emit('set-username', name);
     this.setState({playerName: name});
   }
 
@@ -106,27 +107,5 @@ class GamesPage extends React.Component<{navigate: any, games: any}>
     );
   }
 }
-
-const withSocketio = (Component: any) => {
-  const Wrapper = (props: any) => {
-    useEffect(() => {
-      socket.on('get-games', Component.onGetGames);
-      console.log('emitting');
-      socket.emit("get-games");
-  
-      return () => {
-        socket.off('get-games', Component.onGetGames);
-      };
-    }, []);
-    
-    return (
-      <Component
-        {...props}
-        />
-    );
-  };
-  
-  return Wrapper;
-};
 
 export default withRouter(GamesPage);

@@ -14,6 +14,48 @@ async function connect() {
     cardSets = db.collection('card_sets');
 }
 
+async function getCards(useBaseGame, useExpansion, useNSFW) {
+    var cards = [];
+
+    if(useBaseGame) {
+        var baseGame = await cardSets.findOne({
+            name: 'Base Game'
+        });
+
+        if(!baseGame) {
+            log(`Error: base game set not found in DB!`);
+            return;
+        }
+        cards = cards.concat(baseGame.cards);
+    }
+
+    if(useExpansion) {
+        var expansion = await cardSets.findOne({
+            name: 'Expansion'
+        });
+
+        if(!expansion) {
+            log(`Error: expansion set not found in DB!`);
+            return;
+        }
+        cards = cards.concat(expansion.cards);
+    }
+
+    if(useNSFW) {
+        var nsfw = await cardSets.findOne({
+            name: 'nsfw'
+        });
+
+        if(!nsfw) {
+            log(`Error: nsfw set not found in DB!`);
+            return;
+        }
+        cards = cards.concat(nsfw.cards);
+    }
+
+    return cards;
+}
+
 async function seedCards() {
     if(db == null) {
         await connect();
@@ -81,5 +123,6 @@ async function seedCards() {
 
 module.exports = {
     connect: connect,
-    seedCards: seedCards
+    seedCards: seedCards,
+    getCards: getCards
 };
