@@ -7,7 +7,7 @@
 var app = require('../app');
 var debug = require('debug')('server:server');
 var http = require('http');
-var { initialize } = require('../sockets/socketio');
+var { initialize } = require('../sockets/gameController');
 
 /**
  * Get port from environment and store in Express.

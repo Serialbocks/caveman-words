@@ -6,24 +6,24 @@ import GamePage from './Pages/gamePage/GamePage';
 import { socket } from './socket';
 import { useEffect, useState } from 'react';
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <GamesPage />
-  },
-  {
-    path: "/create",
-    element: <CreateGamePage />
-  },
-  {
-    path: "/game",
-    element: <GamePage />
-  }
-]);
-
 function App() {
   const [isConnected, setIsConnected] = useState(socket.connected);
-  const [fooEvents, setFooEvents] = useState([]);
+  const [games, setGames] = useState([]);
+
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <GamesPage games={games} />
+    },
+    {
+      path: "/create",
+      element: <CreateGamePage />
+    },
+    {
+      path: "/game",
+      element: <GamePage />
+    }
+  ]);
 
   useEffect(() => {
     function onConnect() {
@@ -34,18 +34,18 @@ function App() {
       setIsConnected(false);
     }
 
-    function onFooEvent(value: any) {
-      console.log(value);
+    function onGetGames(games: any) {
+      setGames(games);
     }
 
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
-    socket.on('foo', onFooEvent);
+    socket.on('get-games', onGetGames);
 
     return () => {
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
-      socket.off('foo', onFooEvent);
+      socket.off('get-games', onGetGames);
     };
   }, []);
 

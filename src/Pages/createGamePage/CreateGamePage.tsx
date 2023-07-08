@@ -1,6 +1,7 @@
 import React from 'react';
 import './create-game-page.css';
 import { uniqueNamesGenerator, adjectives, animals, Config } from 'unique-names-generator';
+import { withRouter } from '../WithRouter';
 
 const characterConfig: Config = {
     dictionaries: [adjectives, adjectives, animals],
@@ -9,9 +10,10 @@ const characterConfig: Config = {
       style: 'capital'
     };
 
-class CreateGamePage extends React.Component
+class CreateGamePage extends React.Component<{navigate: any}>
 {
     public CreateGamePage() {
+        this.back=this.back.bind(this);
     }
   
     readonly state: any = {
@@ -62,6 +64,10 @@ class CreateGamePage extends React.Component
         this.setState({error: ''});
         
         console.log(this.state);
+    }
+
+    back() {
+        this.props.navigate('/');
     }
 
     render() {
@@ -150,7 +156,7 @@ class CreateGamePage extends React.Component
                     <button onClick={() => this.createGame()} className="primary" style={{width: "100%"}}>Create</button>
                 </div>
                 <div className="col-sm-6">
-                    <a style={{width: "100%"}} href={`/`}><button style={{width: "100%"}}>Cancel</button></a>
+                    <button onClick={() => this.back()} style={{width: "100%"}}>Cancel</button>
                 </div>
             </div>
           </>
@@ -158,4 +164,4 @@ class CreateGamePage extends React.Component
       }
 }
 
-export default CreateGamePage;
+export default withRouter(CreateGamePage);

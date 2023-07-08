@@ -1,6 +1,6 @@
 const moment = require('moment');
 const fs = require('fs');
-const logFile = '../log.txt';
+const logFile = './log.txt';
 
 function log(text) {
     let datedText = `${moment().format('l LTS')} ${text}`;
