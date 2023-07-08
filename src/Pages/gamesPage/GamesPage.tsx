@@ -13,7 +13,7 @@ const characterConfig: Config = {
       style: 'capital'
     };
 
-class GamesPage extends React.Component<{navigate: any, games: any}>
+class GamesPage extends React.Component<{navigate: any, games: any, setJoiningGameName: any}>
 {
   constructor(props: any) {
     super(props);
@@ -49,7 +49,14 @@ class GamesPage extends React.Component<{navigate: any, games: any}>
   }
 
   joinGame(game: Game) {
-    this.props.navigate("/game");
+    if(game.hasPassword) {
+      this.props.setJoiningGameName(game.name);
+      this.props.navigate("/enter-password");
+    } else {
+      socket.emit('join-game', game.name);
+      this.props.navigate("/game");
+    }
+    
   }
 
   GameList({ games }: any) {

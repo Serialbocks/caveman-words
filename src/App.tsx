@@ -5,15 +5,18 @@ import CreateGamePage from './Pages/createGamePage/CreateGamePage';
 import GamePage from './Pages/gamePage/GamePage';
 import { socket } from './socket';
 import { useEffect, useState } from 'react';
+import EnterPasswordPage from './Pages/enterPasswordPage/EnterPasswordPage';
 
 function App() {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [games, setGames] = useState([]);
+  const [gameState, setGameState] = useState(null);
+  const [joiningGameName, setJoiningGameName] = useState('');
 
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <GamesPage games={games} />
+      element: <GamesPage games={games} setJoiningGameName={setJoiningGameName} />
     },
     {
       path: "/create",
@@ -21,7 +24,11 @@ function App() {
     },
     {
       path: "/game",
-      element: <GamePage />
+      element: <GamePage gameState={gameState} />
+    },
+    {
+      path: "/enter-password",
+      element: <EnterPasswordPage gameName={joiningGameName} />
     }
   ]);
 
@@ -38,14 +45,20 @@ function App() {
       setGames(games);
     }
 
+    function onSyncGameState(gameState: any) {
+      setGameState(gameState);
+    }
+
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     socket.on('get-games', onGetGames);
+    socket.on('sync-game-state', onSyncGameState);
 
     return () => {
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
       socket.off('get-games', onGetGames);
+      socket.off('sync-game-state', onSyncGameState);
     };
   }, []);
 

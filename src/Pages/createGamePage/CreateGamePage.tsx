@@ -30,11 +30,11 @@ class CreateGamePage extends React.Component<{navigate: any}>
     };
 
     componentDidMount() {
-        socket.on('game-created', this.onGameCreated);
+        socket.on('game-created', (game) => this.onGameCreated(game, this));
     }
 
     componentWillUnmount() {
-        socket.off('game-created', this.onGameCreated);
+        socket.off('game-created', (game) => this.onGameCreated(game, this));
     }
 
     createGame() {
@@ -79,8 +79,9 @@ class CreateGamePage extends React.Component<{navigate: any}>
         this.props.navigate('/');
     }
 
-    public onGameCreated(game: any) {
-        console.log(game);
+    onGameCreated(game: any, self: any) {
+        socket.emit('join-game', self.state.name, self.state.password );
+        self.props.navigate('/game');
     }
 
     render() {
