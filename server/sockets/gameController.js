@@ -180,6 +180,26 @@ async function drawCard(socket, previousCardScore) {
 
     let players = getPlayersInGame(game);
 
+    if(currentTurn.currentCard) {
+        console.log(currentTurn.currentCard);
+        switch(previousCardScore) {
+            case 3:
+                currentTurn.three.push(currentTurn.currentCard);
+                break;
+            case 1:
+                currentTurn.one.push(currentTurn.currentCard);
+                break;
+            case 0:
+                currentTurn.skipped.push(currentTurn.currentCard);
+                break;
+            case -1:
+                currentTurn.minusOne.push(currentTurn.currentCard);
+                break;
+            default:
+                break;
+        }
+    }
+
     timesSeen = (word) => {
         let times = 0;
         for (const [key, value] of Object.entries(players)) {

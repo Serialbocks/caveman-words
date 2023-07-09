@@ -46,6 +46,7 @@ function App() {
     }
 
     function onSyncGameState(gameState: any) {
+      console.log(gameState);
       setGameState(gameState);
     }
 

@@ -23,25 +23,26 @@ class GamesPage extends React.Component<{navigate: any, games: any, setJoiningGa
   }
 
   readonly state: any = {
-    playerName: this.getPlayerName(),
+    playerName: this.getPlayerName(false),
     error: ''
   };
 
-  getPlayerName() {
+  getPlayerName(setState: boolean = true) {
     var currentName = localStorage.getItem("playerName");
     if(!currentName) {
       currentName = uniqueNamesGenerator(characterConfig);
     }
 
-    this.setPlayerName(currentName);
+    this.setPlayerName(currentName, setState);
 
     return currentName;
   }
 
-  setPlayerName(name: string) {
+  setPlayerName(name: string, setState: boolean = true) {
     localStorage.setItem("playerName", name);
     socket.emit('set-username', name);
-    this.setState({playerName: name});
+    if(setState)
+      this.setState({playerName: name});
   }
 
   joinGame(game: Game) {
