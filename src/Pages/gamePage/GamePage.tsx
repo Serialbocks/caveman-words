@@ -35,6 +35,9 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
             <h2 className="word">{this.state.card.word2}</h2>
           </div>
         </div>
+        <div className="center-container">
+          <button onClick={() => this.drawCard()}>Skip</button>
+        </div>
       </>
     );
   }
@@ -50,10 +53,28 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
 
       return (
         <>
-          {this.state.card ? this.wordCard() : ''}
-          <div className="center-container">
-            <button onClick={() => this.drawCard()}>New Card</button>
+          <div className="row top-row">
+            <div className="col-sm-4">
+              <div className="card">
+                <h5>Team Mad</h5>
+                <hr />
+              </div>
+            </div>
+            <div className="col-sm-2">
+              <button>Take Turn</button>
+            </div>
+            <div className="col-sm-2">
+              Timer
+            </div>
+            <div className="col-sm-4">
+              <div className="card">
+                <h5>Team Glad</h5>
+                <hr />
+              </div>
+            </div>
           </div>
+
+          {this.state.card ? this.wordCard() : ''}
         </>
       );
   }

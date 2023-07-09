@@ -1,6 +1,7 @@
 const { Server } = require("socket.io");
 const log = require('../utils/log');
 const { getCards, updateTimesSeen } = require('../database/database');
+const moment = require('moment');
 
 let io = null;
 let games = {};
@@ -110,6 +111,7 @@ async function createGame(socket, game) {
     game.teamMad = {};
     game.spectating = {};
     games[game.name] = game;
+    game.pastTurns = [];
     game.cards = await getCards(game.useBaseGame, game.useExpansion, game.useNSFW);
     game.cards = shuffle(game.cards);
 
@@ -171,6 +173,32 @@ async function drawCard(socket) {
     await updateTimesSeen(game.cards[0], players);
 }
 
+function takeTurn(socket) {
+    let game = socket.game;
+    let username = socket.username;
+    if(!game || !username) return;
+
+    if(game.currentTurn) {
+        let now = moment().millisecond();
+        if(now - game.currentTurn.started > (game.turnTime * 1000)) {
+            game.pastTurns.push(game.currentTurn);
+        }
+    }
+
+    game.currentTurn = {
+        player: username,
+        currentCard: drawCard(socket),
+        three: [],
+        one: [],
+        minusOne: [],
+        skipped: [],
+        started: moment().millisecond()
+    }
+
+    notifyPlayersInGame(socket.game.name);
+    socket.emit('draw-card', game.currentTurn.currentCard);
+}
+
 function initialize(server) {
     io = new Server(server, {
         cors: {
@@ -212,6 +240,11 @@ function initialize(server) {
         socket.on('join-game', (gameName, password) => {
             log(`User ${socket.username} joining game ${gameName}`);
             joinGame(socket, gameName, password);
+        });
+
+        socket.on('take-turn', () => {
+            log(`User ${socket.username} taking turn`);
+            takeTurn(socket);
         });
 
         socket.on('draw-card', () => {

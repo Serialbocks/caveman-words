@@ -10,8 +10,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
 }
 
 hr {
     height: 3px;
+}
+
+.top-row {
+    align-items: center;
 }
