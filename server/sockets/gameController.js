@@ -24,16 +24,35 @@ function getPlayersInGame(game) {
     return players;
 }
 
+function resolveCurrentTurn(game) {
+    if(game.currentTurn) {
+        let now = moment().valueOf();
+        console.log(now);
+        game.currentTurn.elapsed = now - game.currentTurn.started;
+        console.log(game.currentTurn.elapsed);
+        console.log(game.turnTime * 1000);
+        if(game.currentTurn.elapsed >= (game.turnTime * 1000)) {
+            game.pastTurns.push(game.currentTurn);
+            game.currentTurn = null;
+        }
+    }
+}
+
 function getGameState(gameName) {
     var game = games[gameName];
     if(!game) return null;
+
+    // Check if current turn is over
+    resolveCurrentTurn(game);
 
     let gameState = {
         id: game.id,
         name: game.name,
         spectating: [],
         teamMad: [],
-        teamGlad: []
+        teamGlad: [],
+        currentTurn: game.currentTurn,
+        pastTurns: game.pastTurns
     };
 
     for (const [key, value] of Object.entries(game.spectating)) {
@@ -77,6 +96,7 @@ function joinGame(socket, gameName, password) {
 
     game.spectating[socket.username] = socket;
     socket.game = game;
+    socket.team = 'spectating';
     notifyPlayersInGame(gameName);
 }
 
@@ -178,12 +198,9 @@ function takeTurn(socket) {
     let username = socket.username;
     if(!game || !username) return;
 
-    if(game.currentTurn) {
-        let now = moment().millisecond();
-        if(now - game.currentTurn.started > (game.turnTime * 1000)) {
-            game.pastTurns.push(game.currentTurn);
-        }
-    }
+    resolveCurrentTurn(game);
+
+    if(game.currentTurn) return;
 
     game.currentTurn = {
         player: username,
@@ -192,7 +209,7 @@ function takeTurn(socket) {
         one: [],
         minusOne: [],
         skipped: [],
-        started: moment().millisecond()
+        started: moment().valueOf()
     }
 
     notifyPlayersInGame(socket.game.name);

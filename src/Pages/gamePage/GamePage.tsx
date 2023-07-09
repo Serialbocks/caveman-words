@@ -21,62 +21,74 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
     self.setState({ card: card });
   }
 
-  drawCard() {
-    socket.emit('draw-card');
+  drawCard(points: number) {
+    socket.emit('draw-card', points);
   }
 
-  wordCard() {
-    return (
-      <>
-        <div className="center-container">
-          <div className="card game-card">
-            <h2 className="word">{this.state.card.word1}</h2>
-            <hr />
-            <h2 className="word">{this.state.card.word2}</h2>
-          </div>
-        </div>
-        <div className="center-container">
-          <button onClick={() => this.drawCard()}>Skip</button>
-        </div>
-      </>
-    );
+  takeTurn() {
+    socket.emit('take-turn');
   }
 
   render() {
-      if(!this.props.gameState) {
-        return (
-          <>
-            <h4>Joining game...</h4>
-          </>
-        );
-      }
-
+    let wordCardUI = () => {
       return (
         <>
-          <div className="row top-row">
-            <div className="col-sm-4">
-              <div className="card">
-                <h5>Team Mad</h5>
-                <hr />
-              </div>
-            </div>
-            <div className="col-sm-2">
-              <button>Take Turn</button>
-            </div>
-            <div className="col-sm-2">
-              Timer
-            </div>
-            <div className="col-sm-4">
-              <div className="card">
-                <h5>Team Glad</h5>
-                <hr />
-              </div>
+          <div className="center-container">
+            <div className="card game-card">
+              <h2 className="word">{this.state.card.word1}</h2>
+              <hr />
+              <h2 className="word">{this.state.card.word2}</h2>
             </div>
           </div>
-
-          {this.state.card ? this.wordCard() : ''}
+          <div className="center-container">
+            <button onClick={() => this.drawCard(3)}>+3</button>
+            <button onClick={() => this.drawCard(1)}>+1</button>
+            <button onClick={() => this.drawCard(-1)}>-1</button>
+            <button onClick={() => this.drawCard(0)}>Skip</button>
+          </div>
         </>
       );
+    };
+
+    let takeTurnUI = () => {
+      return <button onClick={() => this.takeTurn()}>Take Turn</button>;
+    };
+
+    let timerUI = () => {
+      return '';
+    }
+
+    if(!this.props.gameState) {
+      return (
+        <>
+          <h4>Joining game...</h4>
+        </>
+      );
+    }
+
+    return (
+      <>
+        <div className="row top-row">
+          <div className="col-sm-4">
+            <div className="card">
+              <h5>Team Mad</h5>
+              <hr />
+            </div>
+          </div>
+          <div className="col-sm-4">
+            {this.props.gameState.currentTurn ? timerUI() : takeTurnUI()}
+          </div>
+          <div className="col-sm-4">
+            <div className="card">
+              <h5>Team Glad</h5>
+              <hr />
+            </div>
+          </div>
+        </div>
+
+        {this.state.card ? wordCardUI() : ''}
+      </>
+    );
   }
 }
 
