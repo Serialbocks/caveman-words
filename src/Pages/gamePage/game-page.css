@@ -1,0 +1,17 @@
+.game-card {
+    width: 200px;
+    height: 300px;
+}
+
+.word {
+    margin: 0;
+    width: 100%;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+hr {
+    height: 3px;
+}

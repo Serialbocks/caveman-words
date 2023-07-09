@@ -14,6 +14,34 @@ async function connect() {
     cardSets = db.collection('card_sets');
 }
 
+async function updateTimesSeen(card, players) {
+    var cardSet = await cardSets.findOne({ name: card.set });
+
+    let word = cardSet.cards[card.index];
+    for (const [key, value] of Object.entries(players)) {
+        var username = key;
+        var ip = value.handshake.address;
+        if(!word.times_seen[username])
+        {
+            word.times_seen[username] = 0;
+        }
+        if(!word.times_seen[ip])
+        {
+            word.times_seen[ip] = 0;
+        }
+        word.times_seen[username]++;
+        word.times_seen[ip]++;
+    }
+
+    await cardSets.updateOne({
+        _id: cardSet._id
+    }, {
+        $set: {
+            cards: cardSet.cards
+        }
+    });
+}
+
 async function getCards(useBaseGame, useExpansion, useNSFW) {
     var cards = [];
 
@@ -124,5 +152,6 @@ async function seedCards() {
 module.exports = {
     connect: connect,
     seedCards: seedCards,
-    getCards: getCards
+    getCards: getCards,
+    updateTimesSeen: updateTimesSeen
 };

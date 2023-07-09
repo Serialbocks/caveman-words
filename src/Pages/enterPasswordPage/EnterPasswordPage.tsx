@@ -20,12 +20,10 @@ class EnterPasswordPage extends React.Component<{navigate: any, gameName: string
     }
 
     onSyncGameState(self: any) {
-        console.log('joining game');
         self.props.navigate('/game');
     }
 
     onWrongPassword(self: any) {
-        console.log('wrong password');
         self.setState({ error: 'Wrong password' });
     }
 

@@ -27,10 +27,6 @@ class GamesPage extends React.Component<{navigate: any, games: any, setJoiningGa
     error: ''
   };
 
-  onGetGames(games: any) {
-    console.log(games);
-  }
-
   getPlayerName() {
     var currentName = localStorage.getItem("playerName");
     if(!currentName) {

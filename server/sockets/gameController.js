@@ -1,11 +1,27 @@
 const { Server } = require("socket.io");
 const log = require('../utils/log');
-const { getCards } = require('../database/database');
+const { getCards, updateTimesSeen } = require('../database/database');
 
 let io = null;
 let games = {};
 
 let users = [];
+
+function getPlayersInGame(game) {
+    var players = {};
+
+    for (const [key, value] of Object.entries(game.spectating)) {
+        players[key] = value;
+    }
+    for (const [key, value] of Object.entries(game.teamMad)) {
+        players[key] = value;
+    }
+    for (const [key, value] of Object.entries(game.teamGlad)) {
+        players[key] = value;
+    }
+
+    return players;
+}
 
 function getGameState(gameName) {
     var game = games[gameName];
@@ -71,14 +87,88 @@ async function createGame(socket, game) {
         return;
     }
 
+    shuffle = (array) => {
+        let currentIndex = array.length,  randomIndex;
+      
+        // While there remain elements to shuffle.
+        while (currentIndex != 0) {
+      
+          // Pick a remaining element.
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex--;
+      
+          // And swap it with the current element.
+          [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
+        }
+      
+        return array;
+    }
+
     game.playerCount = 0;
     game.teamGlad = {};
     game.teamMad = {};
     game.spectating = {};
     games[game.name] = game;
     game.cards = await getCards(game.useBaseGame, game.useExpansion, game.useNSFW);
+    game.cards = shuffle(game.cards);
 
     socket.emit('game-created', getGameState(game.name));
+}
+
+async function drawCard(socket) {
+    game = socket.game;
+    if(!game) return;
+
+    let players = getPlayersInGame(game);
+
+    timesSeen = (word) => {
+        let times = 0;
+        for (const [key, value] of Object.entries(players)) {
+            var username = key;
+            var ip = value.handshake.address;
+            if(word.times_seen[username])
+            {
+                times += word.times_seen[username];
+            }
+            if(word.times_seen[ip])
+            {
+                times += word.times_seen[ip];
+            }
+        }
+        return times;
+    };
+
+    compare = ( a, b ) => {
+        if ( timesSeen(a) < timesSeen(b) ){
+            return -1;
+        }
+        if ( timesSeen(a) > timesSeen(b) ){
+            return 1;
+        }
+        return 0;
+    };
+
+    game.cards.sort(compare);
+
+    socket.emit('draw-card', game.cards[0]);
+
+    for (const [key, value] of Object.entries(players)) {
+        var username = key;
+        var ip = value.handshake.address;
+        let word = game.cards[0];
+        if(!word.times_seen[username])
+        {
+            word.times_seen[username] = 0;
+        }
+        if(!word.times_seen[ip])
+        {
+            word.times_seen[ip] = 0;
+        }
+        word.times_seen[username]++;
+        word.times_seen[ip]++;
+    }
+    await updateTimesSeen(game.cards[0], players);
 }
 
 function initialize(server) {
@@ -122,6 +212,11 @@ function initialize(server) {
         socket.on('join-game', (gameName, password) => {
             log(`User ${socket.username} joining game ${gameName}`);
             joinGame(socket, gameName, password);
+        });
+
+        socket.on('draw-card', () => {
+            log(`User ${socket.username} requested new card`);
+            drawCard(socket);
         });
 
         socket.on('disconnect', () => {
