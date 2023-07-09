@@ -27,15 +27,29 @@ function getPlayersInGame(game) {
 function resolveCurrentTurn(game) {
     if(game.currentTurn) {
         let now = moment().valueOf();
-        console.log(now);
         game.currentTurn.elapsed = now - game.currentTurn.started;
-        console.log(game.currentTurn.elapsed);
-        console.log(game.turnTime * 1000);
         if(game.currentTurn.elapsed >= (game.turnTime * 1000)) {
             game.pastTurns.push(game.currentTurn);
             game.currentTurn = null;
         }
     }
+}
+
+function getPublicCurrentTurn(currentTurn) {
+    if(!currentTurn) return currentTurn;
+
+    var publicCurrentTurn = {
+        player: currentTurn.player,
+        three: currentTurn.three,
+        one: currentTurn.one,
+        minusOne: currentTurn.minusOne,
+        skipped: currentTurn.skipped,
+        started: currentTurn.started,
+        elapsed: currentTurn.elapsed,
+        team: currentTurn.team
+    };
+
+    return publicCurrentTurn;
 }
 
 function getGameState(gameName) {
@@ -51,7 +65,7 @@ function getGameState(gameName) {
         spectating: [],
         teamMad: [],
         teamGlad: [],
-        currentTurn: game.currentTurn,
+        currentTurn: getPublicCurrentTurn(game.currentTurn),
         pastTurns: game.pastTurns
     };
 
@@ -74,13 +88,29 @@ function notifyPlayersInGame(gameName) {
     var gameState = getGameState(gameName);
     if(!gameState) return;
 
+
     for (const [key, value] of Object.entries(game.spectating)) {
+        if(gameState.currentTurn && gameState.currentTurn.team != "spectating") {
+            gameState.currentCard = game.currentTurn.currentCard;
+        } else {
+            gameState.currentCard = undefined;
+        }
         value.emit('sync-game-state', gameState);
     }
     for (const [key, value] of Object.entries(game.teamMad)) {
+        if(gameState.currentTurn && gameState.currentTurn.team != "team-mad") {
+            gameState.currentCard = game.currentTurn.currentCard;
+        } else {
+            gameState.currentCard = undefined;
+        }
         value.emit('sync-game-state', gameState);
     }
     for (const [key, value] of Object.entries(game.teamGlad)) {
+        if(gameState.currentTurn && gameState.currentTurn.team != "team-glad") {
+            gameState.currentCard = game.currentTurn.currentCard;
+        } else {
+            gameState.currentCard = undefined;
+        }
         value.emit('sync-game-state', gameState);
     }
 }
@@ -138,9 +168,15 @@ async function createGame(socket, game) {
     socket.emit('game-created', getGameState(game.name));
 }
 
-async function drawCard(socket) {
+async function drawCard(socket, previousCardScore) {
     game = socket.game;
     if(!game) return;
+
+    resolveCurrentTurn(game);
+    let currentTurn = game.currentTurn;
+    if(!currentTurn) return;
+
+    if(currentTurn.player != socket.username) return;
 
     let players = getPlayersInGame(game);
 
@@ -173,7 +209,9 @@ async function drawCard(socket) {
 
     game.cards.sort(compare);
 
+    currentTurn.currentCard = game.cards[0];
     socket.emit('draw-card', game.cards[0]);
+    notifyPlayersInGame(game.name);
 
     for (const [key, value] of Object.entries(players)) {
         var username = key;
@@ -193,7 +231,7 @@ async function drawCard(socket) {
     await updateTimesSeen(game.cards[0], players);
 }
 
-function takeTurn(socket) {
+async function takeTurn(socket) {
     let game = socket.game;
     let username = socket.username;
     if(!game || !username) return;
@@ -204,16 +242,16 @@ function takeTurn(socket) {
 
     game.currentTurn = {
         player: username,
-        currentCard: drawCard(socket),
+        currentCard: null,
         three: [],
         one: [],
         minusOne: [],
         skipped: [],
-        started: moment().valueOf()
+        started: moment().valueOf(),
+        team: socket.team
     }
 
-    notifyPlayersInGame(socket.game.name);
-    socket.emit('draw-card', game.currentTurn.currentCard);
+    await drawCard(socket, 0);
 }
 
 function initialize(server) {
@@ -259,14 +297,14 @@ function initialize(server) {
             joinGame(socket, gameName, password);
         });
 
-        socket.on('take-turn', () => {
+        socket.on('take-turn', async () => {
             log(`User ${socket.username} taking turn`);
-            takeTurn(socket);
+            await takeTurn(socket);
         });
 
-        socket.on('draw-card', () => {
+        socket.on('draw-card', (previousCardScore) => {
             log(`User ${socket.username} requested new card`);
-            drawCard(socket);
+            drawCard(socket, previousCardScore);
         });
 
         socket.on('disconnect', () => {
