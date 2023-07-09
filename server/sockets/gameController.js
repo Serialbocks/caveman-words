@@ -274,6 +274,28 @@ async function takeTurn(socket) {
     await drawCard(socket, 0);
 }
 
+function joinTeam(socket, teamName) {
+    let game = socket.game;
+    if(!game) return;
+
+    switch(teamName) {
+        case 'teamMad':
+            game.teamMad[socket.username] = socket;
+            delete game.spectating[socket.username];
+            delete game.teamGlad[socket.username];
+            break;
+        case 'teamGlad':
+            game.teamGlad[socket.username] = socket;
+            delete game.spectating[socket.username];
+            delete game.teamMad[socket.username];
+            break;
+        default:
+            return;
+    }
+
+    notifyPlayersInGame(game.name);
+}
+
 function initialize(server) {
     io = new Server(server, {
         cors: {
@@ -325,6 +347,11 @@ function initialize(server) {
         socket.on('draw-card', (previousCardScore) => {
             log(`User ${socket.username} requested new card`);
             drawCard(socket, previousCardScore);
+        });
+
+        socket.on('join-team', (teamName) => {
+            log(`User ${socket.username} joining team ${teamName}`);
+            joinTeam(socket, teamName);
         });
 
         socket.on('disconnect', () => {
