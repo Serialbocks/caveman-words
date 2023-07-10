@@ -66,7 +66,8 @@ function getGameState(gameName) {
         teamMad: [],
         teamGlad: [],
         currentTurn: getPublicCurrentTurn(game.currentTurn),
-        pastTurns: game.pastTurns
+        pastTurns: game.pastTurns,
+        turnTime: game.turnTime
     };
 
     for (const [key, value] of Object.entries(game.spectating)) {

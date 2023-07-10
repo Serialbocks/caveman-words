@@ -3,7 +3,7 @@ const log = require('../utils/log');
 const { parseFile } = require('@fast-csv/parse');
 const { cardSet, card } = require('./card-set');
 
-const uri = "mongodb://localhost:27017/";
+const uri = "mongodb://127.0.0.1:27017/";
 const client = new MongoClient(uri);
 
 let db = null;

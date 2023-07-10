@@ -2,10 +2,12 @@ import React from "react";
 import { withRouter } from "../WithRouter";
 import { socket } from "../../socket";
 import './game-page.css';
+import moment from 'moment';
 
 class GamePage extends React.Component<{navigate: any, gameState: any}>
 {
   private username: string | null;
+  private timer: any = null;
 
   constructor(props: any) {
     super(props);
@@ -13,7 +15,8 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
   }
 
   readonly state: any = {
-    card: null
+    card: null,
+    timeRemainingString: null
   };
 
   componentDidMount() {
@@ -22,6 +25,56 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
 
   componentWillUnmount() {
     socket.off('draw-card', (card) => this.onDrawCard(card, this));
+  }
+
+  componentDidUpdate(prevProps: any, prevState: any, snapshot: any) {
+    if(this.props.gameState?.currentTurn && !this.timer) {
+      this.startTimer();
+    } else if(!this.props.gameState?.currentTurn && this.timer) {
+      clearInterval(this.timer);
+    }
+  }
+
+  msToHMS( ms: number ) {
+    // 1- Convert to seconds:
+    let seconds = ms / 1000;
+    // 2- Extract hours:
+    seconds = seconds % 3600; // seconds remaining after extracting hours
+    // 3- Extract minutes:
+    const minutes = Math.floor(seconds / 60); // 60 seconds in 1 minute
+    // 4- Keep only seconds not extracted to minutes:
+    seconds = Math.ceil(seconds % 60);
+
+    let secondsStr = seconds.toString();
+    if(seconds < 10) {
+      secondsStr = '0' + seconds;
+    }
+    return `${minutes}:${secondsStr}`
+  }
+
+  startTimer() {
+    let currentTurn = this.props.gameState?.currentTurn;
+    if(!currentTurn) return;
+
+    let roundTimeMs = this.props.gameState.turnTime * 1000;
+    let startTime = moment().valueOf() - currentTurn.elapsed;
+
+    this.timer = setInterval(() => {
+      currentTurn = this.props.gameState?.currentTurn;
+      if(!currentTurn) return;
+
+      let timeElapsed = moment().valueOf() - startTime;
+
+      let timeRemaining = roundTimeMs - timeElapsed;
+
+      this.setState({ timeRemainingString: this.msToHMS(timeRemaining) });
+
+      if(timeRemaining <= 0) {
+        this.setState({ timeRemainingString: null });
+        clearInterval(this.timer);
+        this.props.gameState.currentTurn = null;
+      }
+    }, 100);
   }
 
   onDrawCard(card: any, self: any) {
@@ -75,7 +128,7 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
     };
 
     let timerUI = () => {
-      return '';
+      return <div>{this.state.timeRemainingString}</div>;
     }
 
     let teamListUI = (players: any[]) => {
@@ -122,7 +175,7 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
                 {teamListUI(this.props.gameState.teamMad)}
               </div>
             </div>
-            <div className="col-sm-4">
+            <div className="col-sm-4 center-container">
               {this.props.gameState.currentTurn ? timerUI() : takeTurnUI()}
             </div>
             <div className="col-sm-4">

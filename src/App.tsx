@@ -7,6 +7,7 @@ import { socket } from './socket';
 import { useEffect, useState } from 'react';
 import EnterPasswordPage from './Pages/enterPasswordPage/EnterPasswordPage';
 
+
 function App() {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [games, setGames] = useState([]);
