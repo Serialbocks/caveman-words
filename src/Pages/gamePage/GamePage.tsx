@@ -32,6 +32,8 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
       this.startTimer();
     } else if(!this.props.gameState?.currentTurn && this.timer) {
       clearInterval(this.timer);
+      this.timer = null;
+      this.setState({ card: null });
     }
   }
 
@@ -103,26 +105,40 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
     socket.emit('join-team', teamName);
   }
 
+  endTurn() {
+    socket.emit('end-turn');
+  }
+
   render() {
-    let wordCardUI = () => {
+    let wordCardUI = (card: any) => {
       return (
         <>
+          <h3>{this.props.gameState?.currentTurn?.player ? `${this.props.gameState.currentTurn.player}'s turn` : ''}</h3>
           <div className="center-container">
             <div className="card game-card">
-              <h2 className="word">{this.state.card.word1}</h2>
+              <h2 className="word">{card.word1}</h2>
               <hr />
-              <h2 className="word">{this.state.card.word2}</h2>
+              <h2 className="word">{card.word2}</h2>
             </div>
           </div>
+        </>
+      );
+    };
+
+    let myTurnUI = (card: any) => {
+      return (
+        <>
+          {wordCardUI(card)}
           <div className="center-container">
             <button onClick={() => this.drawCard(3)}>+3</button>
             <button onClick={() => this.drawCard(1)}>+1</button>
             <button onClick={() => this.drawCard(-1)}>-1</button>
             <button onClick={() => this.drawCard(0)}>Skip</button>
+            <button onClick={() => this.endTurn()}>End Turn</button>
           </div>
         </>
       );
-    };
+    }
 
     let takeTurnUI = () => {
       return <button onClick={() => this.takeTurn()}>Take Turn</button>;
@@ -165,6 +181,16 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
       );
     }
 
+    let cardUI = () => {
+      if(this.state.card) {
+        return myTurnUI(this.state.card);
+      }
+
+      if(this.props.gameState?.currentCard) {
+        return wordCardUI(this.props.gameState?.currentCard);
+      }
+    };
+
     let mainUI = () => {
       return (
         <>
@@ -188,7 +214,7 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
             </div>
           </div>
 
-          {this.state.card ? wordCardUI() : ''}
+          {cardUI()}
         </>
       );
     }

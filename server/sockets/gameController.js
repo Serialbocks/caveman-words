@@ -99,7 +99,7 @@ function notifyPlayersInGame(gameName) {
         value.emit('sync-game-state', gameState);
     }
     for (const [key, value] of Object.entries(game.teamMad)) {
-        if(gameState.currentTurn && gameState.currentTurn.team != "team-mad") {
+        if(gameState.currentTurn && gameState.currentTurn.team != "teamMad") {
             gameState.currentCard = game.currentTurn.currentCard;
         } else {
             gameState.currentCard = undefined;
@@ -107,7 +107,7 @@ function notifyPlayersInGame(gameName) {
         value.emit('sync-game-state', gameState);
     }
     for (const [key, value] of Object.entries(game.teamGlad)) {
-        if(gameState.currentTurn && gameState.currentTurn.team != "team-glad") {
+        if(gameState.currentTurn && gameState.currentTurn.team != "teamGlad") {
             gameState.currentCard = game.currentTurn.currentCard;
         } else {
             gameState.currentCard = undefined;
@@ -182,7 +182,6 @@ async function drawCard(socket, previousCardScore) {
     let players = getPlayersInGame(game);
 
     if(currentTurn.currentCard) {
-        console.log(currentTurn.currentCard);
         switch(previousCardScore) {
             case 3:
                 currentTurn.three.push(currentTurn.currentCard);
@@ -294,6 +293,19 @@ function joinTeam(socket, teamName) {
             return;
     }
 
+    socket.team = teamName;
+
+    notifyPlayersInGame(game.name);
+}
+
+function endTurn(socket) {
+    let game = socket.game;
+    if(!game) return;
+    let currentTurn = game.currentTurn;
+    if(!currentTurn || currentTurn.player != socket.username) return;
+
+    game.currentTurn.started = 0;
+    resolveCurrentTurn(game);
     notifyPlayersInGame(game.name);
 }
 
@@ -358,6 +370,11 @@ function initialize(server) {
         socket.on('get-game-state', () => {
             log(`User ${socket.username} requested game state`);
             notifyPlayersInGame(socket.game.name);
+        });
+
+        socket.on('end-turn', () => {
+            log(`User ${socket.username} requested end turn`);
+            endTurn(socket);
         });
 
         socket.on('disconnect', () => {
