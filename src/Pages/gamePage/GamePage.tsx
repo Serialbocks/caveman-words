@@ -70,9 +70,10 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
       this.setState({ timeRemainingString: this.msToHMS(timeRemaining) });
 
       if(timeRemaining <= 0) {
-        this.setState({ timeRemainingString: null });
+        this.setState({ timeRemainingString: null, card: null });
         clearInterval(this.timer);
         this.props.gameState.currentTurn = null;
+        socket.emit('get-game-state');
       }
     }, 100);
   }

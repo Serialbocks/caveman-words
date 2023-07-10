@@ -355,6 +355,11 @@ function initialize(server) {
             joinTeam(socket, teamName);
         });
 
+        socket.on('get-game-state', () => {
+            log(`User ${socket.username} requested game state`);
+            notifyPlayersInGame(socket.game.name);
+        });
+
         socket.on('disconnect', () => {
             users = users.splice(users.indexOf(socket), 1);
             log(`Client disconnected: ${socket.handshake.address}`);
