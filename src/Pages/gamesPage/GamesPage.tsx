@@ -58,17 +58,17 @@ class GamesPage extends React.Component<{navigate: any, games: any, setJoiningGa
 
   GameList({ games }: any) {
     if(games.length > 0) {
-      const gameListItems = games.map((game: Game) => (
-        <>
-          <div key={game.name} className="row">
-            <div className="col-sm-12">
-              <div className="card fluid" onClick={() => this.joinGame(game)}>
-                <h2 className="doc">{game.name}</h2>
-                <p className="doc">Players: {game.playerCount}/{game.capacity}</p>
+      const gameListItems = games.map((game: Game, i: number) => (
+        <React.Fragment key={game.name}>
+          <div key={`row-${game.name}`} className="row">
+            <div key={`col-sm-12-${game.name}`} className="col-sm-12">
+              <div key={`card-${game.name}`} className="card fluid" onClick={() => this.joinGame(game)}>
+                <h2 key={`h2-${game.name}`} className="doc">{game.name}</h2>
+                <p key={`player-count-${game.name}`} className="doc">Players: {game.playerCount}/{game.capacity}</p>
               </div>
             </div>
           </div>
-        </>
+        </React.Fragment>
       ), this);
       return gameListItems;
     } else {
@@ -102,8 +102,8 @@ class GamesPage extends React.Component<{navigate: any, games: any, setJoiningGa
         <this.GameList games={this.props.games} />
 
         <div className="row">
-                <div className="error col-sm-12">{this.state.error}</div>
-            </div>
+            <div className="error col-sm-12">{this.state.error}</div>
+        </div>
         <div className="flex-container">
           <button className="primary" style={{width: "183px"}} onClick={this.createGame}>Create Game</button>
         </div>

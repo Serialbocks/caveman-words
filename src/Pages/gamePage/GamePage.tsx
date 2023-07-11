@@ -150,12 +150,12 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
     }
 
     let teamListUI = (players: any[]) => {
-      const playerListItems = players.map((player: any) => (
-        <>
-          <div style={{margin: '5px'}} key={player}>
+      const playerListItems = players.map((player: any, i) => (
+        <React.Fragment key={player}>
+          <div style={{margin: '5px'}} key={i}>
             {player}
           </div>
-        </>
+        </React.Fragment>
       ), this);
       return playerListItems;
     }
@@ -190,6 +190,13 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
       if(this.props.gameState?.currentCard) {
         return wordCardUI(this.props.gameState?.currentCard);
       }
+    };
+
+    let turnUI = (turn: any) => {
+      return (
+        <>
+        </>
+      );
     };
 
     let mainUI = () => {
