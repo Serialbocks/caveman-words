@@ -272,7 +272,12 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
     }
 
     let roundHistoryUI = () => {
-
+      let pastTurns: any[] = this.props.gameState.pastTurns;
+      return pastTurns.map((turn: any, i) => (
+        <React.Fragment key={`Round-${i}`}>
+          {turnUI(turn, pastTurns.length - i)}
+        </React.Fragment>
+      ));
     }
 
     let mainUI = () => {
@@ -301,8 +306,9 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
           </div>
 
           {cardUI()}
-
           {currentTurnUI()}
+          {this.props.gameState?.pastTurns?.length ? <h4>Round History</h4> : ''}
+          {roundHistoryUI()}
         </>
       );
     }

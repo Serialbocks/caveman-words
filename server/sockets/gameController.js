@@ -29,7 +29,7 @@ function resolveCurrentTurn(game) {
         let now = moment().valueOf();
         game.currentTurn.elapsed = now - game.currentTurn.started;
         if(game.currentTurn.elapsed >= (game.turnTime * 1000)) {
-            game.pastTurns.push(game.currentTurn);
+            game.pastTurns.unshift(game.currentTurn);
             game.currentTurn = null;
         }
     }
