@@ -241,6 +241,10 @@ async function drawCard(socket, previousCardScore) {
     for (const [key, value] of Object.entries(players)) {
         var username = key;
         var ip = value.handshake.address;
+        if(value.handshake.headers && value.handshake.headers['x-forwarded-for']) {
+            ip = value.handshake.headers['x-forwarded-for'];
+        }
+        console.log(ip);
         let word = game.cards[0];
         if(!word.times_seen[username])
         {
@@ -340,7 +344,7 @@ function initialize(server) {
     io.on('connection', (socket) => {
         socket.username = '';
         users.push(socket);
-        log(`Client connected: ${socket.handshake.address}`);
+        log(`Client connected`, socket);
 
         socket.on('get-games', () => {
             let gameArr = [];
@@ -358,47 +362,47 @@ function initialize(server) {
         });
 
         socket.on('set-username', (username) => {
-            log(`Setting username: ${username}`);
+            log(`Setting username: ${username}`, socket);
             socket.username = username;
         });
 
         socket.on('create-game', async (game) => {
-            log(`User ${socket.username} creating game ${game.name}`);
+            log(`User ${socket.username} creating game ${game.name}`, socket);
             await createGame(socket, game);
         });
 
         socket.on('join-game', (gameName, password) => {
-            log(`User ${socket.username} joining game ${gameName}`);
+            log(`User ${socket.username} joining game ${gameName}`, socket);
             joinGame(socket, gameName, password);
         });
 
         socket.on('take-turn', async () => {
-            log(`User ${socket.username} taking turn`);
+            log(`User ${socket.username} taking turn`, socket);
             await takeTurn(socket);
         });
 
         socket.on('draw-card', (previousCardScore) => {
-            log(`User ${socket.username} requested new card`);
+            log(`User ${socket.username} requested new card`, socket);
             drawCard(socket, previousCardScore);
         });
 
         socket.on('join-team', (teamName) => {
-            log(`User ${socket.username} joining team ${teamName}`);
+            log(`User ${socket.username} joining team ${teamName}`, socket);
             joinTeam(socket, teamName);
         });
 
         socket.on('get-game-state', () => {
-            log(`User ${socket.username} requested game state`);
+            log(`User ${socket.username} requested game state`, socket);
             notifyPlayersInGame(socket.game.name);
         });
 
         socket.on('end-turn', () => {
-            log(`User ${socket.username} requested end turn`);
+            log(`User ${socket.username} requested end turn`, socket);
             endTurn(socket);
         });
 
         socket.on('disconnect', () => {
-            log(`Client disconnected: ${socket.handshake.address}`);
+            log(`Client disconnected`, socket);
             onDisconnect(socket);
         });
     });
