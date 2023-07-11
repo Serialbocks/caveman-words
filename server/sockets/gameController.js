@@ -125,6 +125,11 @@ function joinGame(socket, gameName, password) {
         return;
     }
 
+    if(!game.connectedPlayers) {
+        game.connectedPlayers = [];
+    }
+
+    game.connectedPlayers.unshift(socket);
     game.spectating[socket.username] = socket;
     socket.game = game;
     socket.team = 'spectating';
@@ -309,6 +314,21 @@ function endTurn(socket) {
     notifyPlayersInGame(game.name);
 }
 
+function onDisconnect(socket) {
+    users = users.splice(users.indexOf(socket), 1);
+
+    let game = socket.game;
+    if(game) {
+        let index = game.connectedPlayers?.indexOf(socket);
+        if(index >= 0) {
+            game.connectedPlayers.splice(index, 1);
+            if(!game.connectedPlayers.length) {
+                delete games[game.name];
+            }
+        }
+    }
+}
+
 function initialize(server) {
     io = new Server(server, {
         cors: {
@@ -326,10 +346,10 @@ function initialize(server) {
             let gameArr = [];
             let index = 0;
             for (const [key, value] of Object.entries(games)) {
-                gameArr.push({
+                gameArr.unshift({
                     id: index++,
                     name: value.name,
-                    playerCount: value.playerCount,
+                    playerCount: value.connectedPlayers.length,
                     capacity: value.capacity,
                     hasPassword: !!value.password
                 });
@@ -378,8 +398,8 @@ function initialize(server) {
         });
 
         socket.on('disconnect', () => {
-            users = users.splice(users.indexOf(socket), 1);
             log(`Client disconnected: ${socket.handshake.address}`);
+            onDisconnect(socket);
         });
     });
 }
