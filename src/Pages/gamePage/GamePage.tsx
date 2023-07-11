@@ -38,6 +38,7 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
   }
 
   msToHMS( ms: number ) {
+    ms = ms + 1000;
     // 1- Convert to seconds:
     let seconds = ms / 1000;
     // 2- Extract hours:
@@ -45,7 +46,7 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
     // 3- Extract minutes:
     const minutes = Math.floor(seconds / 60); // 60 seconds in 1 minute
     // 4- Keep only seconds not extracted to minutes:
-    seconds = Math.ceil(seconds % 60);
+    seconds = Math.floor(seconds % 60);
 
     let secondsStr = seconds.toString();
     if(seconds < 10) {
