@@ -129,7 +129,8 @@ function joinGame(socket, gameName, password) {
         game.connectedPlayers = [];
     }
 
-    game.connectedPlayers.unshift(socket);
+    if(game.connectedPlayers.indexOf(socket.username) < 0)
+        game.connectedPlayers.unshift(socket.username);
     game.spectating[socket.username] = socket;
     socket.game = game;
     socket.team = 'spectating';
@@ -323,7 +324,7 @@ function onDisconnect(socket) {
 
     let game = socket.game;
     if(game) {
-        let index = game.connectedPlayers?.indexOf(socket);
+        let index = game.connectedPlayers?.indexOf(socket.username);
         if(index >= 0) {
             game.connectedPlayers.splice(index, 1);
             if(!game.connectedPlayers.length) {
