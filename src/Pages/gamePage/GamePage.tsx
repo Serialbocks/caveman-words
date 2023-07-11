@@ -192,12 +192,88 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
       }
     };
 
-    let turnUI = (turn: any) => {
+    let teamName = (internalName: string) => {
+      if(internalName == 'teamMad') return 'Team Mad';
+      if(internalName == 'teamGlad') return 'Team Glad';
+      return '';
+    };
+
+    let turnPoints = (turn: any) => {
+      return (3 * turn.three.length) + (turn.one.length) + (-1 * turn.minusOne.length);
+    };
+
+    let teamPoints = (team: string) => {
+      let points = 0;
+      if(!this.props.gameState?.pastTurns) return points;
+
+      for(let i = 0; i < this.props.gameState.pastTurns.length; i++) {
+        let turn = this.props.gameState.pastTurns[i];
+        if(turn.team == team) {
+          points += turnPoints(turn);
+        }
+      }
+
+      return points;
+    }
+
+    let cardList = (cards: any[]) => {
+      return cards.map(card => (
+          <React.Fragment key={card.word1+card.word2}>
+            <div>{`${card.word1}/${card.word2}`}</div>
+          </React.Fragment>
+        ));
+    }
+
+    let turnUI = (turn: any, roundNumber: number, isCurrent = false) => {
       return (
         <>
+          <div style={{maxWidth: 'none'}} className="card">
+            <div className="row">
+              <div className="col-sm-8">
+                <h4>Round {roundNumber} {isCurrent ? '(current)' : ''} - {turn.player} - {teamName(turn.team)}</h4>
+              </div>
+              <div className="col-sm-4 right-container">
+                <h5>Points: {turnPoints(turn)}</h5>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-sm-3 card no-margin">
+                <h5>+3</h5>
+                {turn.three.length ? <hr /> : ''}
+                {cardList(turn.three)}
+              </div>
+              <div className="col-sm-3 card no-margin">
+                <h5>+1</h5>
+                {turn.one.length ? <hr /> : ''}
+                {cardList(turn.one)}
+              </div>
+              <div className="col-sm-3 card no-margin">
+                <h5>-1</h5>
+                {turn.minusOne.length ? <hr /> : ''}
+                {cardList(turn.minusOne)}
+              </div>
+              <div className="col-sm-3 card no-margin">
+                <h5>skipped</h5>
+                {turn.skipped.length ? <hr /> : ''}
+                {cardList(turn.skipped)}
+              </div>
+            </div>
+          </div>
         </>
       );
     };
+
+    let currentTurnUI = () => {
+      if(this.props.gameState?.currentTurn) {
+        let roundNumber = this.props.gameState.pastTurns.length + 1;
+        return turnUI(this.props.gameState?.currentTurn, roundNumber, true);
+      }
+      return '';
+    }
+
+    let roundHistoryUI = () => {
+
+    }
 
     let mainUI = () => {
       return (
@@ -206,6 +282,7 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
             <div className="col-sm-4">
               <div className="card">
                 <h5>Team Mad</h5>
+                <div style={{marginLeft: '8px'}}>Points: {teamPoints('teamMad')}</div>
                 <hr />
                 {teamListUI(this.props.gameState.teamMad)}
               </div>
@@ -216,6 +293,7 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
             <div className="col-sm-4">
               <div className="card">
                 <h5>Team Glad</h5>
+                <div style={{marginLeft: '8px'}}>Points: {teamPoints('teamGlad')}</div>
                 <hr />
                 {teamListUI(this.props.gameState.teamGlad)}
               </div>
@@ -223,6 +301,8 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
           </div>
 
           {cardUI()}
+
+          {currentTurnUI()}
         </>
       );
     }
