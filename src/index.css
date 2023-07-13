@@ -4,8 +4,15 @@
     display: flex;
     justify-content: center;
     flex-direction: column;
-    width: 45%;
     padding-top: 25px;
+    width: 90%;
+}
+
+@media only screen and (min-width: 1200px) {
+    /* styles for browsers larger than 960px; */
+    .container {
+        width: 45%;
+    }
 }
 
 .flex-container {
@@ -35,4 +42,12 @@
 .error {
     color: red;
     font-weight: bold;
+}
+
+div {
+    overflow-wrap: anywhere;
+}
+
+button {
+    overflow-wrap: break-word;
 }

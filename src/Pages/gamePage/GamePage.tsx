@@ -284,7 +284,7 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
       return (
         <>
           <div className="row top-row">
-            <div className="col-sm-4">
+            <div className="col-sm-5">
               <div className="card">
                 <h5>Team Mad</h5>
                 <div style={{marginLeft: '8px'}}>Points: {teamPoints('teamMad')}</div>
@@ -292,10 +292,10 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
                 {teamListUI(this.props.gameState.teamMad)}
               </div>
             </div>
-            <div className="col-sm-4 center-container">
+            <div className="col-sm-2 center-container">
               {this.props.gameState.currentTurn ? timerUI() : takeTurnUI()}
             </div>
-            <div className="col-sm-4">
+            <div className="col-sm-5">
               <div className="card">
                 <h5>Team Glad</h5>
                 <div style={{marginLeft: '8px'}}>Points: {teamPoints('teamGlad')}</div>
