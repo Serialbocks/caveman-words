@@ -93,6 +93,14 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
     socket.emit('take-turn');
   }
 
+  newGame() {
+    socket.emit('new-game');
+  }
+
+  randomizeTeams() {
+    socket.emit('randomize-teams');
+  }
+
   isOnTeam() {
     if(!this.props.gameState) return false;
     if(this.props.gameState.spectating.indexOf(this.username) >= 0) {
@@ -258,6 +266,7 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
                 {cardList(turn.skipped)}
               </div>
             </div>
+            <div>{!isCurrent && turn.currentCard ? 'Last Card: ' + `${turn.currentCard.word1}/${turn.currentCard.word2}` : ''}</div>
           </div>
         </>
       );
@@ -280,9 +289,23 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
       ));
     }
 
+    let hostUI = () => {
+      return (
+        <>
+          <div className="row">
+            <div className="col-sm-3"></div>
+            <div className="col-sm-3"><button onClick={() => this.newGame()}>New Game</button></div>
+            <div className="col-sm-3"><button onClick={() => this.randomizeTeams()}>Randomize Teams</button></div>
+            <div className="col-sm-3"></div>
+          </div>
+        </>
+      );
+    }
+
     let mainUI = () => {
       return (
         <>
+          {this.props.gameState.host == this.username && !this.timer ? hostUI() : ''}
           <div className="row top-row">
             <div className="col-sm-5">
               <div className="card">

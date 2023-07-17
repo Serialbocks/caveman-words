@@ -67,7 +67,8 @@ function getGameState(gameName) {
         teamGlad: [],
         currentTurn: getPublicCurrentTurn(game.currentTurn),
         pastTurns: game.pastTurns,
-        turnTime: game.turnTime
+        turnTime: game.turnTime,
+        host: game.host
     };
 
     for (const [key, value] of Object.entries(game.spectating)) {
@@ -137,30 +138,30 @@ function joinGame(socket, gameName, password) {
     notifyPlayersInGame(gameName);
 }
 
+function shuffle(array) {
+    let currentIndex = array.length,  randomIndex;
+      
+    // While there remain elements to shuffle.
+    while (currentIndex != 0) {
+  
+      // Pick a remaining element.
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+  
+      // And swap it with the current element.
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex], array[currentIndex]];
+    }
+  
+    return array;
+}
+
 async function createGame(socket, game) {
     if(!socket.username) {
         return;
     }
     if(games[game.name] !== undefined) {
         return;
-    }
-
-    shuffle = (array) => {
-        let currentIndex = array.length,  randomIndex;
-      
-        // While there remain elements to shuffle.
-        while (currentIndex != 0) {
-      
-          // Pick a remaining element.
-          randomIndex = Math.floor(Math.random() * currentIndex);
-          currentIndex--;
-      
-          // And swap it with the current element.
-          [array[currentIndex], array[randomIndex]] = [
-            array[randomIndex], array[currentIndex]];
-        }
-      
-        return array;
     }
 
     game.playerCount = 0;
@@ -171,6 +172,7 @@ async function createGame(socket, game) {
     game.pastTurns = [];
     game.cards = await getCards(game.useBaseGame, game.useExpansion, game.useNSFW);
     game.cards = shuffle(game.cards);
+    game.host = socket.username;
 
     socket.emit('game-created', getGameState(game.name));
 }
@@ -319,6 +321,50 @@ function endTurn(socket) {
     notifyPlayersInGame(game.name);
 }
 
+function newGame(socket) {
+    let game = socket.game;
+    if(!game) return;
+    if(game.host != socket.username) return;
+
+    game.currentTurn = null;
+    game.pastTurns = [];
+    game.currentCard = null;
+    notifyPlayersInGame(game.name);
+}
+
+function randomizeTeams(socket) {
+    let game = socket.game;
+    if(!game) return;
+    if(game.host != socket.username) return;
+
+    let playerMap = {};
+    let playerList = [];
+
+    for (const [key, value] of Object.entries(game.teamMad)) {
+        playerMap[key] = value;
+        playerList.push(key);
+    }
+    for (const [key, value] of Object.entries(game.teamGlad)) {
+        playerMap[key] = value;
+        playerList.push(key);
+    }
+
+    playerList = shuffle(playerList);
+    game.teamMad = {};
+    game.teamGlad = {};
+
+    let midIndex = Math.floor(playerList.length / 2);
+    for(let i = 0; i < midIndex; i++) {
+        let playerName = playerList[i];
+        game.teamMad[playerName] = playerMap[playerName];
+    }
+    for(let i = midIndex; i < playerList.length; i++) {
+        let playerName = playerList[i];
+        game.teamGlad[playerName] = playerMap[playerName];
+    }
+    notifyPlayersInGame(game.name);
+}
+
 function onDisconnect(socket) {
     users = users.splice(users.indexOf(socket), 1);
 
@@ -400,6 +446,16 @@ function initialize(server) {
         socket.on('end-turn', () => {
             log(`User ${socket.username} requested end turn`, socket);
             endTurn(socket);
+        });
+
+        socket.on('new-game', () => {
+            log(`User ${socket.username} requested start new game`, socket);
+            newGame(socket);
+        });
+
+        socket.on('randomize-teams', () => {
+            log(`User ${socket.username} requested randomize teams`, socket);
+            randomizeTeams(socket);
         });
 
         socket.on('disconnect', () => {
