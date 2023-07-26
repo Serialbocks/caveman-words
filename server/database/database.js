@@ -1,26 +1,34 @@
-const MongoClient = require("mongodb").MongoClient;
 const log = require('../utils/log');
 const { parseFile } = require('@fast-csv/parse');
 const { cardSet, card } = require('./card-set');
-
-const uri = "mongodb://127.0.0.1:27017/";
-const client = new MongoClient(uri);
+const Low = require('lowdb');
+var FileSync = require('lowdb/adapters/FileSync');
 
 let db = null;
 let cardSets = null;
 
+const file = './db.json';
+const adapter = new FileSync(file);
+const defaultData = {cardSets: []};
+
 async function connect() {
-    db = client.db('caveman_words');
-    cardSets = db.collection('card_sets');
+    db = Low(adapter);
+    await db.defaults(defaultData).write();
+    cardSets = db.get('cardSets').value();
 }
 
 async function updateTimesSeen(card, players) {
-    var cardSet = await cardSets.findOne({ name: card.set });
+    var cardSet = db.get('cardSets')
+        .find({ name: card.set })
+        .value();
 
     let word = cardSet.cards[card.index];
     for (const [key, value] of Object.entries(players)) {
         var username = key;
         var ip = value.handshake.address;
+        if(value.handshake.headers && value.handshake.headers['x-forwarded-for']) {
+            ip = value.handshake.headers['x-forwarded-for'];
+        }
         if(!word.times_seen[username])
         {
             word.times_seen[username] = 0;
@@ -33,22 +41,16 @@ async function updateTimesSeen(card, players) {
         word.times_seen[ip]++;
     }
 
-    await cardSets.updateOne({
-        _id: cardSet._id
-    }, {
-        $set: {
-            cards: cardSet.cards
-        }
-    });
+    db.write();
 }
 
 async function getCards(useBaseGame, useExpansion, useNSFW) {
     var cards = [];
 
     if(useBaseGame) {
-        var baseGame = await cardSets.findOne({
-            name: 'Base Game'
-        });
+        var baseGame = db.get('cardSets')
+            .find({ name: 'Base Game' })
+            .value();
 
         if(!baseGame) {
             log(`Error: base game set not found in DB!`);
@@ -58,9 +60,9 @@ async function getCards(useBaseGame, useExpansion, useNSFW) {
     }
 
     if(useExpansion) {
-        var expansion = await cardSets.findOne({
-            name: 'Expansion'
-        });
+        var expansion = db.get('cardSets')
+            .find({ name: 'Expansion' })
+            .value();
 
         if(!expansion) {
             log(`Error: expansion set not found in DB!`);
@@ -70,9 +72,9 @@ async function getCards(useBaseGame, useExpansion, useNSFW) {
     }
 
     if(useNSFW) {
-        var nsfw = await cardSets.findOne({
-            name: 'nsfw'
-        });
+        var nsfw = db.get('cardSets')
+            .find({ name: 'nsfw' })
+            .value();
 
         if(!nsfw) {
             log(`Error: nsfw set not found in DB!`);
@@ -94,7 +96,7 @@ async function seedCards() {
     log('Seeding base game...');
     var baseGame = cardSet();
     baseGame.name = 'Base Game';
-    parseFile('../assets/base-game.csv')
+    parseFile('./assets/base-game.csv')
         .on('error', error => log(error))
         .on('data', row => {
             var newCard = card();
@@ -106,14 +108,14 @@ async function seedCards() {
         })
         .on('end', rowCount => {
             log(`Parsed ${rowCount} rows`);
-            cardSets.insertOne(baseGame);
+            db.get('cardSets').push(baseGame).write();
             log(`Base game saved to DB`);
         });
 
         log('Seeding expansion...');
         var expansion = cardSet();
         expansion.name = 'Expansion';
-        parseFile('../assets/expansion.csv')
+        parseFile('./assets/expansion.csv')
             .on('error', error => log(error))
             .on('data', row => {
                 var newCard = card();
@@ -125,14 +127,14 @@ async function seedCards() {
             })
             .on('end', rowCount => {
                 log(`Parsed ${rowCount} rows`);
-                cardSets.insertOne(expansion);
+                db.get('cardSets').push(expansion).write();
                 log(`Expansion saved to DB`);
             });
 
             log('Seeding nsfw...');
             var nsfw = cardSet();
             nsfw.name = 'nsfw';
-            parseFile('../assets/nsfw.csv')
+            parseFile('./assets/nsfw.csv')
                 .on('error', error => log(error))
                 .on('data', row => {
                     var newCard = card();
@@ -144,7 +146,7 @@ async function seedCards() {
                 })
                 .on('end', rowCount => {
                     log(`Parsed ${rowCount} rows`);
-                    cardSets.insertOne(nsfw);
+                    db.get('cardSets').push(nsfw).write();
                     log(`nsfw saved to DB`);
                 });
 }

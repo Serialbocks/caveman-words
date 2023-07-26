@@ -213,6 +213,9 @@ async function drawCard(socket, previousCardScore) {
         for (const [key, value] of Object.entries(players)) {
             var username = key;
             var ip = value.handshake.address;
+            if(value.handshake.headers && value.handshake.headers['x-forwarded-for']) {
+                ip = value.handshake.headers['x-forwarded-for'];
+            }
             if(word.times_seen[username])
             {
                 times += word.times_seen[username];
@@ -241,25 +244,6 @@ async function drawCard(socket, previousCardScore) {
     socket.emit('draw-card', game.cards[0]);
     notifyPlayersInGame(game.name);
 
-    for (const [key, value] of Object.entries(players)) {
-        var username = key;
-        var ip = value.handshake.address;
-        if(value.handshake.headers && value.handshake.headers['x-forwarded-for']) {
-            ip = value.handshake.headers['x-forwarded-for'];
-        }
-        console.log(ip);
-        let word = game.cards[0];
-        if(!word.times_seen[username])
-        {
-            word.times_seen[username] = 0;
-        }
-        if(!word.times_seen[ip])
-        {
-            word.times_seen[ip] = 0;
-        }
-        word.times_seen[username]++;
-        word.times_seen[ip]++;
-    }
     await updateTimesSeen(game.cards[0], players);
 }
 
