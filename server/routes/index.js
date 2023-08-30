@@ -8,8 +8,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/tcping', function(req, res, next) {
-  let ip = req.ip || req.socket.remoteAddress || 'null';
-  log(`${ip} TCPing ${req.query.version}`);
+  log(`TCPing ${req.query.version}`);
   res.json(true);
 });
 
