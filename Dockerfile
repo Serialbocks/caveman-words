@@ -16,4 +16,4 @@ WORKDIR /caveman-words/server
 RUN npm i
 RUN node seed-cards
 
-ENTRYPOINT ['node', 'bin/www']
+ENTRYPOINT node bin/www
