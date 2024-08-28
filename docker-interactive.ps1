@@ -1,0 +1,1 @@
+docker run -it caveman-words:latest sh
