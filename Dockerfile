@@ -14,3 +14,6 @@ RUN cp -r ./build ./server/public
 
 WORKDIR /caveman-words/server
 RUN npm i
+RUN node seed-cards
+
+ENTRYPOINT ['node', 'bin/www']
