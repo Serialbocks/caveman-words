@@ -1,1 +1,1 @@
-docker build -t caveman-words caveman-words
+docker build -t caveman-words .
