@@ -1,5 +1,8 @@
 .App {
   text-align: center;
+  min-height: 100vh;
+  background-color: var(--background-color);
+  color: var(--text-primary);
 }
 
 .App-logo {
@@ -14,18 +17,83 @@
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  padding: calc(var(--spacing-unit) * 4) 0;
+  background-color: var(--surface-color);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: calc(var(--spacing-unit) * 4);
 }
 
-.App-link {
-  color: #61dafb;
+.App-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.App-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-top: calc(var(--spacing-unit));
+}
+
+.App-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 calc(var(--spacing-unit) * 2);
+}
+
+.App-footer {
+  margin-top: auto;
+  padding: calc(var(--spacing-unit) * 4) 0;
+  background-color: var(--surface-color);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* Navigation styles */
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: calc(var(--spacing-unit) * 2);
+  background-color: var(--surface-color);
+  margin-bottom: calc(var(--spacing-unit) * 4);
+}
+
+.nav-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding: calc(var(--spacing-unit)) calc(var(--spacing-unit) * 2);
+  border-radius: var(--border-radius);
+  transition: all var(--transition-speed);
+}
+
+.nav-link:hover {
+  color: var(--text-primary);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-link.active {
+  color: var(--text-primary);
+  background-color: var(--primary-color);
+}
+
+/* Loading animation */
+.loading-spinner {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  border-top-color: var(--primary-color);
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes App-logo-spin {

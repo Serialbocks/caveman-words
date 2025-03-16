@@ -154,7 +154,7 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
     };
 
     let timerUI = () => {
-      return <div>{this.state.timeRemainingString}</div>;
+      return <div className="timer">{this.state.timeRemainingString}</div>;
     }
 
     let teamListUI = (players: any[]) => {
@@ -303,50 +303,41 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
     }
 
     let mainUI = () => {
+      if(!this.props.gameState) {
+        return <div>Loading...</div>;
+      }
+
+      if(!this.isOnTeam()) {
+        return chooseTeamUI();
+      }
+
       return (
         <>
-          {this.props.gameState.host == this.username && !this.timer ? hostUI() : ''}
-          <div className="row top-row">
-            <div className="col-sm-5">
-              <div className="card">
-                <h5>Team Mad</h5>
-                <div style={{marginLeft: '8px'}}>Points: {teamPoints('teamMad')}</div>
-                <hr />
-                {teamListUI(this.props.gameState.teamMad)}
-              </div>
+          <div className="scores-row">
+            <div className="team-score">
+              <h3>Team Mad:</h3>
+              <h3>{teamPoints('teamMad')}</h3>
             </div>
-            <div className="col-sm-2 center-container">
-              {this.props.gameState.currentTurn ? timerUI() : takeTurnUI()}
-            </div>
-            <div className="col-sm-5">
-              <div className="card">
-                <h5>Team Glad</h5>
-                <div style={{marginLeft: '8px'}}>Points: {teamPoints('teamGlad')}</div>
-                <hr />
-                {teamListUI(this.props.gameState.teamGlad)}
-              </div>
+            {this.state.timeRemainingString && timerUI()}
+            <div className="team-score">
+              <h3>Team Glad:</h3>
+              <h3>{teamPoints('teamGlad')}</h3>
             </div>
           </div>
-
           {cardUI()}
+          {this.props.gameState.currentTurn?.player == this.username ? '' : takeTurnUI()}
+          {this.props.gameState.host == this.username ? hostUI() : ''}
+          {this.props.gameState?.currentTurn && <h4>Current Round</h4>}
           {currentTurnUI()}
-          {this.props.gameState?.pastTurns?.length ? <h4>Round History</h4> : ''}
+          {this.props.gameState?.pastTurns?.length > 0 && <h4>Round History</h4>}
           {roundHistoryUI()}
-        </>
-      );
-    }
-
-    if(!this.props.gameState) {
-      return (
-        <>
-          <h4>Joining game...</h4>
         </>
       );
     }
 
     return (
       <>
-        {this.isOnTeam() ? mainUI() : chooseTeamUI()}
+        {mainUI()}
       </>
     );
   }
