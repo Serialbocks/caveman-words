@@ -55,9 +55,11 @@ class EnterPasswordPage extends React.Component<{navigate: any, gameName: string
               </div>
             </div>
 
-            <div className="row">
-                <div className="error col-sm-12">{this.state.error}</div>
-            </div>
+            {this.state.error && (
+                <div className="row">
+                    <div className="error col-sm-12">{this.state.error}</div>
+                </div>
+            )}
 
             <div className="row">
                 <div className="col-sm-6">

@@ -101,9 +101,12 @@ class GamesPage extends React.Component<{navigate: any, games: any, setJoiningGa
         <h1>Games</h1>
         <this.GameList games={this.props.games} />
 
-        <div className="row">
-            <div className="error col-sm-12">{this.state.error}</div>
-        </div>
+        {this.state.error && (
+            <div className="row">
+                <div className="error col-sm-12">{this.state.error}</div>
+            </div>
+        )}
+        
         <div className="flex-container">
           <button className="primary" style={{width: "183px"}} onClick={this.createGame}>Create Game</button>
         </div>

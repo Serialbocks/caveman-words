@@ -302,6 +302,21 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
       );
     }
 
+    let teamMembersUI = (players: string[], team: string) => {
+      return (
+        <div className="team-members">
+          {players.map((player) => (
+            <div 
+              key={player} 
+              className={`team-member ${this.props.gameState?.currentTurn?.player === player ? 'current-player' : ''}`}
+            >
+              {player}
+            </div>
+          ))}
+        </div>
+      );
+    };
+
     let mainUI = () => {
       if(!this.props.gameState) {
         return <div>Loading...</div>;
@@ -315,13 +330,19 @@ class GamePage extends React.Component<{navigate: any, gameState: any}>
         <>
           <div className="scores-row">
             <div className="team-score">
-              <h3>Team Mad:</h3>
-              <h3>{teamPoints('teamMad')}</h3>
+              <div className="team-score-header">
+                <h3>Team Mad:</h3>
+                <h3>{teamPoints('teamMad')}</h3>
+              </div>
+              {teamMembersUI(this.props.gameState.teamMad, 'teamMad')}
             </div>
-            {this.state.timeRemainingString && timerUI()}
+            {this.props.gameState?.currentTurn && this.state.timeRemainingString && timerUI()}
             <div className="team-score">
-              <h3>Team Glad:</h3>
-              <h3>{teamPoints('teamGlad')}</h3>
+              <div className="team-score-header">
+                <h3>Team Glad:</h3>
+                <h3>{teamPoints('teamGlad')}</h3>
+              </div>
+              {teamMembersUI(this.props.gameState.teamGlad, 'teamGlad')}
             </div>
           </div>
           {cardUI()}
